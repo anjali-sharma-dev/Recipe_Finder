@@ -37,15 +37,25 @@ const Result = () => {
               }
             </p>
           </div>
-          <button
-            className="group inline-flex items-center gap-3 bg-white hover:bg-gray-50 text-gray-700 hover:text-gray-900 font-semibold py-3 px-6 rounded-xl border border-gray-200 hover:border-gray-300 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-            onClick={handleBackClick}
-          >
-            <svg className="w-5 h-5 transform group-hover:-translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Back to Search
-          </button>
+        <button
+  className="group inline-flex items-center gap-3 bg-white hover:bg-gray-50 text-gray-700 hover:text-gray-900 font-semibold py-3 px-6 rounded-xl border border-gray-200 hover:border-gray-300 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+  onClick={handleBackClick}
+>
+  <svg
+    className="w-5 h-3 transform group-hover:-translate-x-1 transition-transform duration-300"
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M10 19l-7-7m0 0l7-7m-7 7h18"
+    />
+  </svg>
+</button>
+
         </div>
 
         {meals.length === 0 ? (
@@ -87,7 +97,7 @@ const Result = () => {
           <div className="mt-16 text-center animate-fade-in">
             <div className="bg-gradient-to-r from-orange-50 to-blue-50 rounded-2xl p-8 border border-orange-200">
               <h3 className="text-xl font-bold text-gray-900 mb-4">
-                🎉 Found {meals.length} amazing recipe{meals.length !== 1 ? 's' : ''}!
+              Found {meals.length} amazing recipe{meals.length !== 1 ? 's' : ''}!
               </h3>
               <p className="text-gray-600 mb-6">
                 Click on any recipe card to view detailed instructions, ingredients, and cooking steps.

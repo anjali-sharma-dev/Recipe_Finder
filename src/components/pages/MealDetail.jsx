@@ -1,81 +1,71 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-const extractIngredients = (meal) => {
-  const ingredients = [];
-  
+function getIngredients(meal) {
+  let result = [];
   for (let i = 1; i <= 20; i++) {
-    const ingredientKey = `strIngredient${i}`;
-    const measureKey = `strMeasure${i}`;
-    
-    const ingredient = meal[ingredientKey];
-    const measure = meal[measureKey];
-    
+    let ingredient = meal[`strIngredient${i}`];
+    let measure = meal[`strMeasure${i}`];
     if (ingredient && ingredient.trim()) {
-      ingredients.push({
+      result.push({
         ingredient: ingredient.trim(),
         measure: (measure || '').trim()
       });
     }
   }
-  
-  return ingredients;
-};
+  return result;
+}
 
-const MealDetail = () => {
+function MealDetail() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { id: routeId } = useParams();
+  const params = useParams();
 
-  const mealFromState = location.state?.meal;
-  const mealId = routeId || mealFromState?.idMeal;
+  const mealFromState = location.state && location.state.meal;
+  const mealId = params.id || (mealFromState && mealFromState.idMeal);
 
   const [meal, setMeal] = useState(mealFromState || null);
   const [isLoading, setIsLoading] = useState(!mealFromState);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    let isCancelled = false;
-    
-    async function fetchMealById(mealId) {
+    let cancelled = false;
+
+    async function fetchMeal(mealId) {
       if (!mealId) return;
-      
       try {
         setIsLoading(true);
         setError(null);
-        
-        const apiUrl = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${encodeURIComponent(mealId)}`;
-        const response = await fetch(apiUrl);
-        const data = await response.json();
-        
-        const mealData = data?.meals && data.meals[0] ? data.meals[0] : null;
-        
-        if (!isCancelled) {
+        let url = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${encodeURIComponent(mealId)}`;
+        let res = await fetch(url);
+        let data = await res.json();
+        let mealData = data.meals && data.meals[0] ? data.meals[0] : null;
+        if (!cancelled) {
           if (mealData) {
             setMeal(mealData);
           } else {
             setError('Meal not found');
           }
         }
-      } catch (error) {
-        if (!isCancelled) {
+      } catch (err) {
+        if (!cancelled) {
           setError('Failed to load meal');
         }
       } finally {
-        if (!isCancelled) {
+        if (!cancelled) {
           setIsLoading(false);
         }
       }
     }
-    
-    fetchMealById(mealId);
-    
+
+    fetchMeal(mealId);
+
     return () => {
-      isCancelled = true;
+      cancelled = true;
     };
   }, [mealId]);
 
-  const ingredients = useMemo(() => (meal ? extractIngredients(meal) : []), [meal]);
+  const ingredients = useMemo(() => (meal ? getIngredients(meal) : []), [meal]);
 
   if (!mealId) {
     return (
@@ -237,7 +227,6 @@ const MealDetail = () => {
         ) : null}
       </div>
     </div>
-  );
-};
-
-export default MealDetail; 
+  )
+}
+  export default MealDetail;
